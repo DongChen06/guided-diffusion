@@ -4,6 +4,8 @@ Train a noised image classifier on ImageNet.
 
 import argparse
 import os
+import sys
+sys.path.append('..')
 
 import blobfile as bf
 import torch as th

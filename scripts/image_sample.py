@@ -5,6 +5,8 @@ numpy array. This can be used to produce samples for FID evaluation.
 
 import argparse
 import os
+import sys
+sys.path.append('..')
 
 import numpy as np
 import torch as th
