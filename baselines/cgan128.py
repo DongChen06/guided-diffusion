@@ -14,8 +14,6 @@ torch.manual_seed(1)
 device = torch.device('cuda:0')
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--data_dir", type=str, default='../datasets/CottonWeed_train', help="dir of training images")
-parser.add_argument("--n_epochs", type=int, default=2000, help="number of epochs of training")
 parser.add_argument("--batch_size", type=int, default=256, help="size of the batches")
 parser.add_argument("--lr", type=float, default=0.0001, help="adam: learning rate")
 parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
@@ -23,20 +21,33 @@ parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of firs
 parser.add_argument("--n_cpu", type=int, default=8, help="number of cpu threads to use during batch generation")
 parser.add_argument("--latent_dim", type=int, default=100, help="dimensionality of the latent space")
 parser.add_argument("--embedding_dim", type=int, default=100, help="dimensionality of the embedding space")
-parser.add_argument("--n_classes", type=int, default=10, help="number of classes for dataset")
-parser.add_argument("--img_size", type=int, default=256, help="size of each image dimension")
 parser.add_argument("--channels", type=int, default=3, help="number of image channels")
 parser.add_argument("--sample_interval", type=int, default=20, help="interval between image sampling")
+parser.add_argument("--n_epochs", type=int, default=2000, help="number of epochs of training")
+
+# for imagenet we use
+# --data_dir /localscratch/zhengyu/Data/imagenet/train --img_size 256 --n_classes 1010 --sample_interval 1
+parser.add_argument("--data_dir", type=str, default='../datasets/CottonWeed_train', help="dir of training images")
+parser.add_argument("--img_size", type=int, default=256, help="size of each image dimension")
+parser.add_argument("--n_classes", type=int, default=10, help="number of classes for dataset")
 opt = parser.parse_args()
 print(opt)
 
-train_loader = torch.utils.data.DataLoader(
-    datasets.ImageFolder(root=opt.data_dir, transform=transforms.Compose(
-            [transforms.Resize((opt.img_size, opt.img_size)), transforms.ToTensor(),
+if 'imagenet' in opt.data_dir:
+    train_loader = torch.utils.data.DataLoader(
+        datasets.ImageFolder(root=opt.data_dir, transform=transforms.Compose(
+            [transforms.RandomResizedCrop((opt.img_size, opt.img_size), scale=(0.2, 1.0), ratio=(0.75, 1.333)),
+             transforms.ToTensor(),
              transforms.Normalize([0.5,0.5,0.5], [0.5,0.5,0.5])]
         ), ), batch_size=opt.batch_size, shuffle=True,)
+else:
+    train_loader = torch.utils.data.DataLoader(
+        datasets.ImageFolder(root=opt.data_dir, transform=transforms.Compose(
+                [transforms.Resize((opt.img_size, opt.img_size)), transforms.ToTensor(),
+                 transforms.Normalize([0.5,0.5,0.5], [0.5,0.5,0.5])]
+            ), ), batch_size=opt.batch_size, shuffle=True,)
 
-image_shape = (3, 256, 256)
+image_shape = (3, opt.img_size, opt.img_size)
 image_dim = int(np.prod(image_shape))
 
 
