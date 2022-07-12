@@ -21,8 +21,8 @@ if __name__ == "__main__":
     source = 'CottonWeedDiff_train'
     dest_train = 'CottonWeed_train'
 
-    source_test = 'CottonWeedDiff_test'
-    dest_test = 'CottonWeed_test'
+    # source_test = 'CottonWeedDiff_test'
+    # dest_test = 'CottonWeed_test'
 
     main(source, dest_train)
-    main(source_test, dest_test)
+    # main(source_test, dest_test)

@@ -5,18 +5,18 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 from torchvision.utils import save_image
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 import os
 from numpy.random import randn
 import argparse
 
 torch.manual_seed(1)
-device = torch.device('cuda:1')
+device = torch.device('cuda:0')
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--data_dir", type=str, default='../datasets/CottonWeed_train', help="dir of training images")
-parser.add_argument("--n_epochs", type=int, default=1000, help="number of epochs of training")
-parser.add_argument("--batch_size", type=int, default=128, help="size of the batches")
+parser.add_argument("--n_epochs", type=int, default=2000, help="number of epochs of training")
+parser.add_argument("--batch_size", type=int, default=256, help="size of the batches")
 parser.add_argument("--lr", type=float, default=0.0001, help="adam: learning rate")
 parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
 parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
@@ -26,7 +26,7 @@ parser.add_argument("--embedding_dim", type=int, default=100, help="dimensionali
 parser.add_argument("--n_classes", type=int, default=10, help="number of classes for dataset")
 parser.add_argument("--img_size", type=int, default=256, help="size of each image dimension")
 parser.add_argument("--channels", type=int, default=3, help="number of image channels")
-parser.add_argument("--sample_interval", type=int, default=10, help="interval between image sampling")
+parser.add_argument("--sample_interval", type=int, default=20, help="interval between image sampling")
 opt = parser.parse_args()
 print(opt)
 

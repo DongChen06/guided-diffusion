@@ -19,12 +19,14 @@ def smooth(x, timestamps=9):
 
 # observation analysis
 imgs_label = np.load('../datasets/cottonweed.npz')
+dest_dir = '../model1/samples/'
+os.makedirs(dest_dir, exist_ok=True)
 
 # for debug usage
 imags = imgs_label['arr_0']
 labels = imgs_label['arr_1']
 
 for index, img in enumerate(imgs_label['arr_0']):
-    if not os.path.exists('../model/' + class_index[imgs_label['arr_1'][index]]):
-        os.mkdir('../model/' + class_index[imgs_label['arr_1'][index]])
-    plt.imsave('../model/' + class_index[imgs_label['arr_1'][index]] + '/' + str(index) + '.jpg', img)
+    if not os.path.exists(dest_dir + class_index[imgs_label['arr_1'][index]]):
+        os.mkdir(dest_dir + class_index[imgs_label['arr_1'][index]])
+    plt.imsave(dest_dir + class_index[imgs_label['arr_1'][index]] + '/' + str(index) + '.jpg', img)
