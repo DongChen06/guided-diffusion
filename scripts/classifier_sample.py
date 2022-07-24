@@ -7,7 +7,7 @@ import argparse
 import os
 import sys
 sys.path.append('..')
-
+import torch.nn as nn
 import numpy as np
 import torch as th
 import torch.distributed as dist
@@ -27,6 +27,7 @@ from guided_diffusion.script_util import (
 
 def main():
     args = create_argparser().parse_args()
+    print(args)
 
     dist_util.setup_dist()
     logger.configure()
@@ -45,6 +46,10 @@ def main():
 
     logger.log("loading classifier...")
     classifier = create_classifier(**args_to_dict(args, classifier_defaults().keys()))
+
+    classifier.out[2].c_proj = nn.Conv1d(512, 9, 1, 1)
+    # classifier.to(dist_util.dev())
+
     classifier.load_state_dict(
         dist_util.load_state_dict(args.classifier_path, map_location="cpu")
     )

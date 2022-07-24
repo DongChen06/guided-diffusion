@@ -4,6 +4,13 @@ from shutil import copyfile
 import numpy as np
 from numpy import asarray
 from PIL import Image
+import random
+
+# for reproducing
+seeds = 66
+os.environ['PYTHONHASHSEED'] = str(seeds)
+random.seed(seeds)
+np.random.seed(seeds)
 
 # class names we want to study, you can add more
 class_index = ['Carpetweeds', 'Eclipta', 'Goosegrass', 'Morningglory',
@@ -46,12 +53,12 @@ def main(source, dest_train, dest_test, training_ratio, image_size):
                 if filename.endswith(ext):
                     # if less than ratio of training set, then put it to the training set
                     if np.random.random(1)[0] <= training_ratio:
-                        image_name = item + '_' + str(index_train) + '.png'
+                        image_name = item + '_' + str(index_train) + '.jpg'
                         copyfile(os.path.join(source, item, filename),
                                  os.path.join(dest_train, image_name))
                         index_train += 1
                     else:
-                        image_name = item + '_' + str(index_test) + '.png'
+                        image_name = item + '_' + str(index_test) + '.jpg'
                         copyfile(os.path.join(source, item, filename),
                                  os.path.join(dest_test, image_name))
                         index_test += 1
@@ -59,15 +66,13 @@ def main(source, dest_train, dest_test, training_ratio, image_size):
     # generate npz files for evaluating FID and IS
     images = []
     labels = []
-    for (dirpath, dirnames, filenames) in walk(dest_test):
+    for (dirpath, dirnames, filenames) in walk(dest_train):
         for filename in filenames:
-            image = Image.open(os.path.join(dest_test, filename))
+            image = Image.open(os.path.join(dest_train, filename))
             image = center_crop_arr(image, image_size)
             images.append(asarray(image))
             labels.append(class_index.index(filename.split('_')[0]))
 
-    # np.save(dest_test + '/arr_0.npy', images)
-    # np.save(dest_test + '/arr_1.npy', labels)
     np.savez('cottonweed.npz', np.array(images), np.array(labels))
 
 

@@ -3,8 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class_index = ['Carpetweeds', 'Eclipta', 'Goosegrass', 'Morningglory',
-               'Nutsedge', 'PalmerAmaranth', 'Purslane', 'Sicklepod', 'SpottedSpurge', 'Waterhemp']
+# class names we want to study, you can add more
+class_index = ['Chineeapple', 'Lantana', 'Parkinsonia', 'Parthenium',
+               'Pricklyacacia', 'Rubbervine', 'Siamweed', 'Snakeweed', 'Negative']
 
 # observation analysis
 imgs_label = np.load('../model256_deepweeds/samples_2000x256x256x3_ADM.npz')

@@ -9,6 +9,7 @@ sys.path.append('..')
 
 import blobfile as bf
 import torch as th
+import torch.nn as nn
 import torch.distributed as dist
 import torch.nn.functional as F
 from torch.nn.parallel.distributed import DistributedDataParallel as DDP
@@ -56,6 +57,8 @@ def main():
                 )
             )
 
+    model.out[2].c_proj = nn.Conv1d(512, 9, 1, 1)
+    model.to(dist_util.dev())
     # Needed for creating correct EMAs and fp16 parameters.
     dist_util.sync_params(model.parameters())
 
@@ -92,14 +95,14 @@ def main():
 
     logger.log(f"creating optimizer...")
     opt = AdamW(mp_trainer.master_params, lr=args.lr, weight_decay=args.weight_decay)
-    if args.resume_checkpoint:
-        opt_checkpoint = bf.join(
-            bf.dirname(args.resume_checkpoint), f"opt{resume_step:06}.pt"
-        )
-        logger.log(f"loading optimizer state from checkpoint: {opt_checkpoint}")
-        opt.load_state_dict(
-            dist_util.load_state_dict(opt_checkpoint, map_location=dist_util.dev())
-        )
+    # if args.resume_checkpoint:
+    #     opt_checkpoint = bf.join(
+    #         bf.dirname(args.resume_checkpoint), f"opt{resume_step:06}.pt"
+    #     )
+    #     logger.log(f"loading optimizer state from checkpoint: {opt_checkpoint}")
+    #     opt.load_state_dict(
+    #         dist_util.load_state_dict(opt_checkpoint, map_location=dist_util.dev())
+    #     )
 
     logger.log("training classifier model...")
 

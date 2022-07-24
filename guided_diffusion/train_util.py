@@ -121,7 +121,7 @@ class TrainLoop:
                     )
                 )
 
-        self.model.label_emb = nn.Embedding(10, 1024)
+        self.model.label_emb = nn.Embedding(9, 1024)
         self.model = self.model.to(dist_util.dev())
 
         dist_util.sync_params(self.model.parameters())
